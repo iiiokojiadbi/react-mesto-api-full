@@ -16,12 +16,14 @@ const ERROR_MESSAGE = {
   INCORRECT_CARD_DATA: 'Неправильные данные карточки',
   SERVER_ERROR: 'Ошибка сервера',
   NOT_FOUND: 'Запрошенный ресурс не найден',
+  UNAUTHORIZED: 'Неправильные почта или пароль',
 };
 
 const ERROR_CODE = {
   INCORRECT_DATA: 400,
   NOT_FOUND: 404,
   SERVER_ERROR: 500,
+  UNAUTHORIZED: 401,
 };
 
 module.exports = {
