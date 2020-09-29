@@ -1,5 +1,5 @@
 const {
-  getAllUsers, getUser, createUser, updateUser, updateUserAvatar,
+  getAllUsers, getUser, createUser, updateUser, updateUserAvatar, login,
 } = require('./users');
 
 const {
@@ -12,6 +12,7 @@ module.exports = {
   createUser,
   updateUser,
   updateUserAvatar,
+  login,
   getAllCards,
   createCard,
   deleteCard,
