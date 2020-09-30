@@ -11,19 +11,18 @@ const LIKE_OPTIONS = {
 const ERROR_MESSAGE = {
   CARD_NOT_FOUND: 'Карточка с таким id не найдена',
   USER_NOT_FOUND: 'Пользователь с таким id не найден',
-  INCORRECT_USER_DATA: 'Неправильные данные пользователя',
-  INCORRECT_AVATAR_DATA: 'Неправильные данные аватара пользователя',
-  INCORRECT_CARD_DATA: 'Неправильные данные карточки',
+  INCORRECT_DATA: 'Неправильные данные',
   SERVER_ERROR: 'Ошибка сервера',
   NOT_FOUND: 'Запрошенный ресурс не найден',
   UNAUTHORIZED: 'Неправильные почта или пароль',
+  NOT_AUTHORIZED: 'Не авторизован',
 };
 
 const ERROR_CODE = {
   INCORRECT_DATA: 400,
+  UNAUTHORIZED: 401,
   NOT_FOUND: 404,
   SERVER_ERROR: 500,
-  UNAUTHORIZED: 401,
 };
 
 module.exports = {
