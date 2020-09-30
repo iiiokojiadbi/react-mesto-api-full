@@ -1,11 +1,11 @@
-class CustomError extends Error {
-  constructor(message, statusCode, ...args) {
-    super(args);
-    this.message = message;
-    this.status = statusCode;
-  }
-}
+const IncorrectDataError = require('./IncorrectDataError');
+const AuthorizedError = require('./AuthorizedError');
+const NotFoundError = require('./NotFoundError');
+const ServerError = require('./ServerError');
 
 module.exports = {
-  CustomError,
+  ServerError,
+  IncorrectDataError,
+  NotFoundError,
+  AuthorizedError,
 };
