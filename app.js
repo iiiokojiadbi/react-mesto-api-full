@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const { usersRouter, cardsRouter, rootRouter } = require('./routes');
+const { authMiddleware } = require('./middlewares');
 const { ERROR_CODE, ERROR_MESSAGE } = require('./constants');
 
 const app = express();
@@ -12,8 +13,8 @@ const { PORT = 3000 } = process.env;
 
 app.disable('x-powered-by');
 app.use(bodyParser.json());
-app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -22,38 +23,28 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5f720f5cd098ca0bd2f6b1ba',
-  };
-
-  next();
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
 });
 
 app.use('/', rootRouter);
+
+app.use(authMiddleware);
+
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
 app.use(errors());
 app.use((err, req, res, next) => {
-  if (err.status !== ERROR_CODE.SERVER_ERROR) {
-    res.status(err.status).send(err.message);
-    return;
+  if (err.status === ERROR_CODE.SERVER_ERROR) {
+    res.status(500).send(ERROR_MESSAGE.SERVER_ERROR);
   }
-  res.status(err.status).send(err.message);
-  next();
-});
 
-app.use((req, res) => {
-  res
-    .status(ERROR_CODE.NOT_FOUND)
-    .send({ message: ERROR_MESSAGE.NOT_FOUND });
+  res.status(err.status).send(err.message);
 });
 
 app.listen(PORT, () => {
   console.log(`Приложение слушает порт: ${PORT}`);
 });
-
-/*
-5f720f5cd098ca0bd2f6b1ba
-*/
