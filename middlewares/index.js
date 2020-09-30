@@ -1,4 +1,4 @@
 const checkAuthorizationFieldsMiddleWare = require('./checkAuthorizationFields');
-const auth = require('./auth');
+const authMiddleware = require('./auth');
 
-module.exports = { checkAuthorizationFieldsMiddleWare, auth };
+module.exports = { checkAuthorizationFieldsMiddleWare, authMiddleware };
