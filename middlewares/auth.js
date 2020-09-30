@@ -7,17 +7,16 @@ const { JWT_SECRET = 'kriptostojkij-psevdosluchajnyj-klyuch-777' } = process.env
 module.exports = (req, res, next) => {
   const { token } = req.cookies;
 
-  const extractedToken = token.replace('Bearer ', '');
-
   let payload;
 
   try {
+    const extractedToken = token.replace('Bearer ', '');
     payload = jwt.verify(extractedToken, JWT_SECRET);
   } catch (err) {
-    throw new AuthorizedError(ERROR_MESSAGE.NOT_AUTHORIZED);
+    next(new AuthorizedError(ERROR_MESSAGE.NOT_AUTHORIZED));
   }
 
   req.user = payload;
 
-  return next();
+  next();
 };

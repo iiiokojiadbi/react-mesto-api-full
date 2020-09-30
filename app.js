@@ -39,10 +39,10 @@ app.use('/cards', cardsRouter);
 app.use(errors());
 app.use((err, req, res, next) => {
   if (err.status === ERROR_CODE.SERVER_ERROR) {
-    res.status(500).send(ERROR_MESSAGE.SERVER_ERROR);
+    res.status(500).send({ message: ERROR_MESSAGE.SERVER_ERROR });
   }
 
-  res.status(err.status).send(err.message);
+  res.status(err.status).send({ message: err.message });
 });
 
 app.listen(PORT, () => {
