@@ -33,6 +33,7 @@ const allowedCors = [
 ];
 
 module.exports = {
+  allowedCors,
   UPDATE_OPTIONS,
   LIKE_OPTIONS,
   ERROR_MESSAGE,
