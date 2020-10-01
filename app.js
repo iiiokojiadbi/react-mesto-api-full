@@ -3,19 +3,30 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const rateLimiter = require('express-rate-limit');
 const { errors } = require('celebrate');
 const { usersRouter, cardsRouter, rootRouter } = require('./routes');
 const { authMiddleware, checkCorsMiddleware } = require('./middlewares');
 const { ERROR_CODE, ERROR_MESSAGE } = require('./constants');
 const { requestLoggerMiddleware, errorLoggerMiddleware } = require('./middlewares/logger');
+const { NotFoundError } = require('./helpers/Errors');
 
-const app = express();
 const { PORT = 3000 } = process.env;
+const app = express();
 
-app.disable('x-powered-by');
+app.use(helmet());
+
+const limiter = rateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Слишком много запросов, повторите запрос позже',
+});
+
+app.use(limiter);
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -39,17 +50,20 @@ app.use(authMiddleware);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+app.use(() => {
+  throw new NotFoundError({ message: ERROR_MESSAGE.NOT_FOUND });
+});
 
 app.use(errorLoggerMiddleware);
 
 app.use(errors());
 // eslint-disable-next-line
 app.use((err, req, res, next) => {
-  if (err.status === ERROR_CODE.SERVER_ERROR) {
-    res.status(500).send({ message: ERROR_MESSAGE.SERVER_ERROR });
+  if (err.status !== ERROR_CODE.SERVER_ERROR) {
+    res.status(err.status).send(err.message);
+    return;
   }
-
-  res.status(err.status).send({ message: err.message });
+  res.status(ERROR_CODE.SERVER_ERROR).send({ message: ERROR_MESSAGE.SERVER_ERROR });
 });
 
 app.listen(PORT, () => {
