@@ -25,6 +25,13 @@ const ERROR_CODE = {
   SERVER_ERROR: 500,
 };
 
+const allowedCors = [
+  'https://www.i-mesto.students.nomoreparties.co',
+  'http://www.i-mesto.students.nomoreparties.co',
+  'https://i-mesto.students.nomoreparties.co',
+  'http://i-mesto.students.nomoreparties.co',
+];
+
 module.exports = {
   UPDATE_OPTIONS,
   LIKE_OPTIONS,

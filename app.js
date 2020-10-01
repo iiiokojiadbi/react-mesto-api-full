@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const { usersRouter, cardsRouter, rootRouter } = require('./routes');
-const { authMiddleware } = require('./middlewares');
+const { authMiddleware, checkCorsMiddleware } = require('./middlewares');
 const { ERROR_CODE, ERROR_MESSAGE } = require('./constants');
 const { requestLoggerMiddleware, errorLoggerMiddleware } = require('./middlewares/logger');
 
@@ -24,6 +24,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+app.use(checkCorsMiddleware);
 app.use(requestLoggerMiddleware);
 
 app.get('/crash-test', () => {
