@@ -1,6 +1,6 @@
 const { allowedCors } = require('../constants');
 
-module.exports = (req, res, next) => {
+function cors(req, res, next) {
   const { origin } = req.headers;
 
   if (allowedCors.includes(origin)) {
@@ -8,4 +8,6 @@ module.exports = (req, res, next) => {
   }
 
   next();
-};
+}
+
+module.exports = cors;
