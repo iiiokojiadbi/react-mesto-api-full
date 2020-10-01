@@ -42,6 +42,7 @@ app.use('/cards', cardsRouter);
 app.use(errorLoggerMiddleware);
 
 app.use(errors());
+// eslint-disable-next-line
 app.use((err, req, res, next) => {
   if (err.status === ERROR_CODE.SERVER_ERROR) {
     res.status(500).send({ message: ERROR_MESSAGE.SERVER_ERROR });
