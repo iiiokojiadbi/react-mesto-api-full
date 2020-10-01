@@ -52,14 +52,18 @@ const userSchema = new mongoose.Schema({
 
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
-    .orFail(new AuthorizedError(ERROR_MESSAGE.UNAUTHORIZED))
-    .then((user) => bcrypt.compare(password, user.password)
-      .then((matched) => {
-        if (!matched) {
-          throw new AuthorizedError(ERROR_MESSAGE.UNAUTHORIZED);
-        }
-        return user;
-      }));
+    .then((user) => {
+      if (!user) {
+        throw new AuthorizedError(ERROR_MESSAGE.UNAUTHORIZED);
+      }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw new AuthorizedError(ERROR_MESSAGE.UNAUTHORIZED);
+          }
+          return user;
+        });
+    });
 };
 
 module.exports = mongoose.model('user', userSchema);
