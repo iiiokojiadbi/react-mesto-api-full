@@ -7,6 +7,7 @@ const { errors } = require('celebrate');
 const { usersRouter, cardsRouter, rootRouter } = require('./routes');
 const { authMiddleware } = require('./middlewares');
 const { ERROR_CODE, ERROR_MESSAGE } = require('./constants');
+const { requestLoggerMiddleware, errorLoggerMiddleware } = require('./middlewares/logger');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -23,6 +24,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+app.use(requestLoggerMiddleware);
+
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
@@ -35,6 +38,8 @@ app.use(authMiddleware);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+
+app.use(errorLoggerMiddleware);
 
 app.use(errors());
 app.use((err, req, res, next) => {
