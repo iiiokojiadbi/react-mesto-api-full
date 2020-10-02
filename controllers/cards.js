@@ -11,23 +11,22 @@ const getAllCards = (req, res, next) => {
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
-
   Card.create({ name, link, owner: req.user._id })
-    .catch((err) => new IncorrectDataError(`${ERROR_MESSAGE.INCORRECT_DATA}: ${err.message}`))
+    .catch((err) => {
+      throw new IncorrectDataError(`${ERROR_MESSAGE.INCORRECT_DATA}: ${err.message}`);
+    })
     .then((card) => res.send({ data: card }))
     .catch(next);
 };
 
 const deleteCard = (req, res, next) => {
-  const { cardId } = req.params;
-
-  Card.findById(cardId).orFail().catch(() => {
+  Card.findById(req.params._id).orFail().catch(() => {
     throw new NotFoundError(ERROR_MESSAGE.CARD_NOT_FOUND);
   }).then((card) => {
     if (card.owner.toString() !== req.user._id) {
       throw new ForbiddenError(ERROR_MESSAGE.NOT_AUTHORIZED);
     }
-    Card.findByIdAndRemove(cardId)
+    Card.findByIdAndRemove(req.params._id)
       .then((cardData) => res.send({ data: cardData }))
       .catch(next);
   })
@@ -35,13 +34,10 @@ const deleteCard = (req, res, next) => {
 };
 
 const likeCard = (req, res, next) => {
-  const { cardId } = req.params;
-  const { _id } = req.user;
-
   Card.findByIdAndUpdate(
-    cardId,
+    req.params._id,
     {
-      $addToSet: { likes: _id },
+      $addToSet: { likes: req.user._id },
     },
     LIKE_OPTIONS,
   )
@@ -52,13 +48,10 @@ const likeCard = (req, res, next) => {
 };
 
 const dislikeCard = (req, res, next) => {
-  const { cardId } = req.params;
-  const { _id } = req.user;
-
   Card.findByIdAndUpdate(
-    cardId,
+    req.params._id,
     {
-      $pull: { likes: _id },
+      $pull: { likes: req.user._id },
     },
     LIKE_OPTIONS,
   )

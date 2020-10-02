@@ -8,8 +8,8 @@ const cardsRouter = express.Router();
 
 cardsRouter.get('/', getAllCards);
 cardsRouter.post('/', validateCard, createCard);
-cardsRouter.put('/:cardId/likes', validateId, likeCard);
-cardsRouter.delete('/:cardId/likes', validateId, dislikeCard);
-cardsRouter.delete('/:cardId', validateId, deleteCard);
+cardsRouter.put('/:_id/likes', validateId, likeCard);
+cardsRouter.delete('/:_id/likes', validateId, dislikeCard);
+cardsRouter.delete('/:_id', validateId, deleteCard);
 
 module.exports = cardsRouter;
