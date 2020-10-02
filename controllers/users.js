@@ -13,9 +13,7 @@ const getAllUsers = (req, res, next) => {
 };
 
 const getUser = (req, res, next) => {
-  const { user } = req.params;
-
-  User.findById(user)
+  User.findById(req.params.user._id)
     .orFail()
     .catch(() => {
       throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND);
@@ -60,7 +58,7 @@ const updateUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
 
   User.findByIdAndUpdate(
-    req.user._id,
+    req.params.user._id,
     { avatar, name, about },
     UPDATE_OPTIONS,
   )
@@ -79,7 +77,7 @@ const updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(
-    req.user._id,
+    req.params.user._id,
     { avatar },
     UPDATE_OPTIONS,
   )
@@ -110,7 +108,7 @@ const login = (req, res, next) => {
           httpOnly: true,
           sameSite: true,
         })
-        .send('Успешная авторизация');
+        .send({ token });
     })
     .catch(next);
 };

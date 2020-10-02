@@ -11,7 +11,7 @@ const getAllCards = (req, res, next) => {
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
-  Card.create({ name, link, owner: req.user._id })
+  Card.create({ name, link, owner: req.params.user._id })
     .catch((err) => {
       throw new IncorrectDataError(`${ERROR_MESSAGE.INCORRECT_DATA}: ${err.message}`);
     })
@@ -23,7 +23,7 @@ const deleteCard = (req, res, next) => {
   Card.findById(req.params._id).orFail().catch(() => {
     throw new NotFoundError(ERROR_MESSAGE.CARD_NOT_FOUND);
   }).then((card) => {
-    if (card.owner.toString() !== req.user._id) {
+    if (card.owner.toString() !== req.params.user._id) {
       throw new ForbiddenError(ERROR_MESSAGE.NOT_AUTHORIZED);
     }
     Card.findByIdAndRemove(req.params._id)
@@ -37,7 +37,7 @@ const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params._id,
     {
-      $addToSet: { likes: req.user._id },
+      $addToSet: { likes: req.params.user._id },
     },
     LIKE_OPTIONS,
   )
@@ -51,7 +51,7 @@ const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params._id,
     {
-      $pull: { likes: req.user._id },
+      $pull: { likes: req.params.user._id },
     },
     LIKE_OPTIONS,
   )

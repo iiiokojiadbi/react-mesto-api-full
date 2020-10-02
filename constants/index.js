@@ -27,6 +27,8 @@ const ERROR_CODE = {
 };
 
 const allowedCors = [
+  'http://localhost:3001',
+  'http://localhost:3000',
   'https://www.i-mesto.students.nomoreparties.co',
   'http://www.i-mesto.students.nomoreparties.co',
   'https://i-mesto.students.nomoreparties.co',

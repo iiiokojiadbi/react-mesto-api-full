@@ -4,7 +4,8 @@ const AuthorizedError = require('../helpers/Errors/AuthorizedError');
 
 const { JWT_SECRET = 'kriptostojkij-psevdosluchajnyj-klyuch-777' } = process.env;
 
-module.exports = (req, res, next) => {
+// eslint-disable-next-line
+const auth = (req, res, next) => {
   const token = req.cookies.jwt;
   let payload;
   try {
@@ -12,7 +13,9 @@ module.exports = (req, res, next) => {
   } catch (err) {
     throw new AuthorizedError(ERROR_MESSAGE.NOT_AUTHORIZED);
   }
-  req.user = payload;
+  req.params.user = payload;
 
   next();
 };
+
+module.exports = auth;
