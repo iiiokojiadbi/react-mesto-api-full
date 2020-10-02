@@ -16,6 +16,7 @@ const ERROR_MESSAGE = {
   NOT_FOUND: 'Запрошенный ресурс не найден',
   UNAUTHORIZED: 'Неправильные почта или пароль',
   NOT_AUTHORIZED: 'Не авторизован',
+  СONFLICT_USER: 'Пользователь с таким email уже существует',
 };
 
 const ERROR_CODE = {

@@ -1,5 +1,21 @@
-const checkAuthorizationFieldsMiddleWare = require('./checkAuthorizationFields');
 const authMiddleware = require('./auth');
 const checkCorsMiddleware = require('./cors');
+const {
+  validateLogin,
+  validateAvatar,
+  validateUserUpdate,
+  validateUser,
+  validateId,
+  validateCard,
+} = require('./validators');
 
-module.exports = { checkAuthorizationFieldsMiddleWare, authMiddleware, checkCorsMiddleware };
+module.exports = {
+  authMiddleware,
+  checkCorsMiddleware,
+  validateLogin,
+  validateAvatar,
+  validateUserUpdate,
+  validateUser,
+  validateId,
+  validateCard,
+};

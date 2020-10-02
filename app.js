@@ -60,7 +60,7 @@ app.use(errors());
 // eslint-disable-next-line
 app.use((err, req, res, next) => {
   if (err.status !== ERROR_CODE.SERVER_ERROR) {
-    res.status(err.status).send(err.message);
+    res.status(err.status).send({ message: err.message });
     return;
   }
   res.status(ERROR_CODE.SERVER_ERROR).send({ message: ERROR_MESSAGE.SERVER_ERROR });

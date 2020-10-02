@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const { UPDATE_OPTIONS, ERROR_MESSAGE } = require('../constants');
-const { NotFoundError } = require('../helpers/Errors');
+const { NotFoundError, ConflictError, IncorrectDataError } = require('../helpers/Errors');
 
 const { JWT_SECRET = 'kriptostojkij-psevdosluchajnyj-klyuch-777' } = process.env;
 
@@ -16,7 +16,10 @@ const getUser = (req, res, next) => {
   const { user } = req.params;
 
   User.findById(user)
-    .orFail(new NotFoundError(ERROR_MESSAGE.NOT_FOUND))
+    .orFail()
+    .catch(() => {
+      throw new NotFoundError(ERROR_MESSAGE.NOT_FOUND);
+    })
     .then((userData) => res.send({ data: userData }))
     .catch(next);
 };
@@ -38,6 +41,11 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
+    .catch((err) => {
+      if (err.name === 'MongoError' || err.code === 11000) {
+        throw new ConflictError(ERROR_MESSAGE.СONFLICT_USER);
+      } else next(err);
+    })
     .then((user) => res.send({
       _id: user._id,
       email: user.email,
@@ -57,7 +65,13 @@ const updateUser = (req, res, next) => {
     { avatar, name, about },
     UPDATE_OPTIONS,
   )
-    .orFail(new NotFoundError(ERROR_MESSAGE.USER_NOT_FOUND))
+    .orFail(() => new NotFoundError(ERROR_MESSAGE.USER_NOT_FOUND))
+    .catch((err) => {
+      if (err instanceof NotFoundError) {
+        throw err;
+      }
+      throw new IncorrectDataError(`${ERROR_MESSAGE.INCORRECT_DATA}: ${err.message}`);
+    })
     .then((user) => res.send({ data: user }))
     .catch(next);
 };
@@ -71,7 +85,13 @@ const updateUserAvatar = (req, res, next) => {
     { avatar },
     UPDATE_OPTIONS,
   )
-    .orFail(new NotFoundError(ERROR_MESSAGE.USER_NOT_FOUND))
+    .orFail(() => new NotFoundError(ERROR_MESSAGE.USER_NOT_FOUND))
+    .catch((err) => {
+      if (err instanceof NotFoundError) {
+        throw err;
+      }
+      throw new IncorrectDataError(`${ERROR_MESSAGE.INCORRECT_DATA}: ${err.message}`);
+    })
     .then((newAvatar) => res.send({ data: newAvatar }))
     .catch(next);
 };

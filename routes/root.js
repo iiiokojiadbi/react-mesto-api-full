@@ -3,13 +3,13 @@ const {
   createUser,
   login,
 } = require('../controllers');
-const { checkAuthorizationFieldsMiddleWare } = require('../middlewares');
+const { validateUser, validateLogin } = require('../middlewares');
 
 const rootRouter = express.Router();
 
-rootRouter.post('/signup', checkAuthorizationFieldsMiddleWare,
+rootRouter.post('/signup', validateUser,
   createUser);
-rootRouter.post('/signin', checkAuthorizationFieldsMiddleWare,
+rootRouter.post('/signin', validateLogin,
   login);
 
 module.exports = rootRouter;
